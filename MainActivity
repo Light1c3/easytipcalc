@@ -1,0 +1,115 @@
+package com.easytipcalc.app;
+
+import android.content.DialogInterface;
+import android.support.v7.app.ActionBarActivity;
+import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.SeekBar;
+
+
+public class MainActivity extends ActionBarActivity {
+
+    private SeekBar seekBar;
+    private EditText Scr; //textbox Screen
+    private float NumberBf; //Save screen before pressing button operation
+    private ButtonclickListener btnClick;
+    private float progress = 0;
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        Scr = (EditText) findViewById(R.id.editText);
+        seekBar = (SeekBar) findViewById(R.id.seekBar);
+
+        int idList[] = {R.id.button1,R.id.button2,R.id.button3,
+                R.id.button4,R.id.button5,R.id.button6,
+                R.id.button7,R.id.button8,R.id.button9,
+        };
+
+        for (int id:idList){
+            View v = (View) findViewById(id);
+            v.setOnClickListener(btnClick);
+        }
+        seekBar.setOnSeekBarChangeListener(
+                new SeekBar.OnSeekBarChangeListener() {
+
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar,
+                                                  int progressValue, boolean fromUser) {
+                        progress = (float) progressValue;
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+                        // Do something here,
+                        //if you want to do anything at the start of
+                        // touching the seekbar
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
+
+    public void getKeyboard(String str) {
+        String ScrCurrent = Scr.getText().toString();
+        ScrCurrent += str;
+        Scr.setText(ScrCurrent);
+    }
+
+    public void CalcTip() {
+        float NumAf = Float.parseFloat(Scr.getText().toString());
+        double result;
+
+        result = ((progress+15)*.01);
+        Scr.setText(String.valueOf(result));
+    }
+
+    // nev class ButtonclickListener
+    private class ButtonclickListener implements View.OnClickListener{
+        public void onClick (View v) {
+            switch (v.getId()){
+                case R.id.buttonC: //clear
+                    Scr.setText("0");
+                    NumberBf = 0;
+                    break;
+                case R.id.button_tip:
+                    CalcTip();
+                    break;
+                default:
+                    String numb = ((Button) v).getText().toString();
+                    getKeyboard(numb);
+                    break;
+            }
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        if (id == R.id.action_settings) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+}
